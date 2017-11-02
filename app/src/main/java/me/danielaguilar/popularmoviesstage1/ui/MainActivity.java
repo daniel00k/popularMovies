@@ -21,10 +21,11 @@ import me.danielaguilar.popularmoviesstage1.R;
 import me.danielaguilar.popularmoviesstage1.adapters.MoviesAdapter;
 import me.danielaguilar.popularmoviesstage1.configurations.Constants;
 import me.danielaguilar.popularmoviesstage1.models.Movie;
+import me.danielaguilar.popularmoviesstage1.utils.ApiConnector;
 import me.danielaguilar.popularmoviesstage1.utils.JSONMovieParser;
 import me.danielaguilar.popularmoviesstage1.utils.NetworkUtils;
 
-public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnMovieClickListener{
+public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnMovieClickListener, ApiConnector.OnTaskCompleted<String>{
 
     private ArrayList<Movie> movies = new ArrayList<>();
     private RecyclerView recyclerView;
@@ -53,33 +54,6 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnM
         startActivity(intent);
     }
 
-    class ApiConnector extends AsyncTask<String, Void, String>{
-
-        @Override
-        protected String doInBackground(String... urls) {
-            final String url = urls[0];
-            String searchResults = null;
-            try {
-                searchResults = NetworkUtils.getResponseFromHttpUrl(NetworkUtils.buildUrl(url));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return searchResults;
-        }
-
-        @Override
-        protected void onPostExecute(String searchResults) {
-            if (searchResults != null && !searchResults.equals("")) {
-                try {
-                    movies = JSONMovieParser.parseFromString(searchResults);
-                    setMovieGrid();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
@@ -101,9 +75,19 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnM
 
     private void queryApi(String queryBy){
         if(NetworkUtils.isConectionAvailable(this)){
-            new ApiConnector().execute(queryBy);
+            new ApiConnector(this).execute(queryBy);
         }else{
             Toast.makeText(this, getString(R.string.connection_error), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onComplete(String result) {
+        try {
+            movies = JSONMovieParser.parseFromString(result);
+            setMovieGrid();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 }
