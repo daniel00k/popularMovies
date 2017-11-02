@@ -100,6 +100,10 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnM
     }
 
     private void queryApi(String queryBy){
-        new ApiConnector().execute(queryBy);
+        if(NetworkUtils.isConectionAvailable(this)){
+            new ApiConnector().execute(queryBy);
+        }else{
+            Toast.makeText(this, getString(R.string.connection_error), Toast.LENGTH_LONG).show();
+        }
     }
 }
