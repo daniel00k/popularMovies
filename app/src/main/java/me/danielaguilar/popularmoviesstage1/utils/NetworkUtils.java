@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +34,25 @@ public class NetworkUtils {
         URL url = null;
         try {
             url = new URL(builtUri.toString());
+            Log.d("URL", builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
+
+    public static URL buildUrlForYoutube(final String videoId) {
+        Uri builtUri = Uri.parse("https://www.youtube.com/watch")
+                            .buildUpon()
+                            .appendQueryParameter("v", videoId)
+                            .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+            Log.d("URL", builtUri.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -66,7 +86,7 @@ public class NetworkUtils {
         }
     }
 
-    public static boolean isConectionAvailable(Context context){
+    public static boolean isConnectionAvailable(Context context){
         ConnectivityManager cm =
                 (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
 

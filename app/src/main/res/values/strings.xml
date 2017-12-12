@@ -2,6 +2,7 @@
     <string name="app_name">PopularMoviesStage1</string>
     <string name="menu_search_by_popular">Search by popular</string>
     <string name="menu_search_by_top_rated">Search by top rated</string>
+    <string name="menu_search_by_favorite">Search by favorite</string>
 
 
     <string name="connection_error">Not connected to the internet</string>

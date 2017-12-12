@@ -1,48 +1,59 @@
 package me.danielaguilar.popularmoviesstage1.ui;
 
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.json.JSONException;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 
 import me.danielaguilar.popularmoviesstage1.R;
 import me.danielaguilar.popularmoviesstage1.adapters.MoviesAdapter;
 import me.danielaguilar.popularmoviesstage1.configurations.Constants;
+import me.danielaguilar.popularmoviesstage1.data.MoviesDbHelper;
 import me.danielaguilar.popularmoviesstage1.models.Movie;
 import me.danielaguilar.popularmoviesstage1.utils.ApiConnector;
 import me.danielaguilar.popularmoviesstage1.utils.JSONMovieParser;
 import me.danielaguilar.popularmoviesstage1.utils.NetworkUtils;
 
-public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnMovieClickListener, ApiConnector.OnTaskCompleted<String>{
+public class MainActivity extends BaseActivity implements MoviesAdapter.OnMovieClickListener, ApiConnector.OnTaskCompleted<String>{
 
     private ArrayList<Movie> movies = new ArrayList<>();
     private RecyclerView recyclerView;
-    public static final String MOVIE_TAG = "movie";
+    private ProgressBar indeterminateBar;
+    private static int SELECTED_FILTER              = -1;
+    public static final String MOVIE_TAG            = "movie";
+    public static final String SELECTED_FILTER_TAG  = "selectedFiler";
+    MoviesAdapter adapter;
+    private SQLiteDatabase mDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        recyclerView = findViewById(R.id.moviesGrid);
+        MoviesDbHelper dbHelper = new MoviesDbHelper(this);
+        mDb = dbHelper.getWritableDatabase();
+        recyclerView        = findViewById(R.id.moviesGrid);
+        indeterminateBar    = findViewById(R.id.indeterminateBar);
+
         recyclerView.setHasFixedSize(true);
+
         queryApi(Constants.API_GET_POPULAR);
         setMovieGrid();
     }
 
     private void setMovieGrid(){
-        MoviesAdapter adapter = new MoviesAdapter(movies, this, this);
+        indeterminateBar.setVisibility(View.GONE);
+        adapter = new MoviesAdapter(movies, this, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
     }
@@ -62,32 +73,84 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnM
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        indeterminateBar.setVisibility(View.VISIBLE);
         switch (item.getItemId()){
             case R.id.menu_search_by_popular:
                 queryApi(Constants.API_GET_POPULAR);
+                SELECTED_FILTER = R.id.menu_search_by_popular;
                 break;
             case R.id.menu_search_by_top_rated:
                 queryApi(Constants.API_GET_TOP_RATED);
+                SELECTED_FILTER = R.id.menu_search_by_top_rated;
+                break;
+            case R.id.menu_search_by_favorite:
+                getFavorites();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    private void getFavorites(){
+        movies = MoviesDbHelper.findAllMovies(mDb);
+        setMovieGrid();
+        SELECTED_FILTER = R.id.menu_search_by_favorite;
+    }
+
     private void queryApi(String queryBy){
-        if(NetworkUtils.isConectionAvailable(this)){
-            new ApiConnector(this).execute(queryBy);
+        if(NetworkUtils.isConnectionAvailable(this)){
+            new ApiConnector(this, MainActivity.class.getName()).execute(NetworkUtils.buildUrl(queryBy));
         }else{
             Toast.makeText(this, getString(R.string.connection_error), Toast.LENGTH_LONG).show();
         }
     }
 
     @Override
-    public void onComplete(String result) {
-        try {
-            movies = JSONMovieParser.parseFromString(result);
-            setMovieGrid();
-        } catch (JSONException e) {
-            e.printStackTrace();
+    public void onComplete(String result, String klassId) {
+        if (klassId.equals(MainActivity.class.getName())){
+            try {
+                movies = JSONMovieParser.parseFromString(result, JSONMovieParser.PARSE_MOVIES);
+                setMovieGrid();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+    /*********************************************************************************************************************
+    *
+    * State callbacks
+    **********************************************************************************************************************
+    */
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(SELECTED_FILTER_TAG, SELECTED_FILTER);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if(savedInstanceState != null && savedInstanceState.getInt(SELECTED_FILTER_TAG)==R.id.menu_search_by_favorite){
+            getFavorites();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Bundle b = getIntent().getExtras();
+        if(b!=null&& b.getInt(SELECTED_FILTER_TAG) == R.id.menu_search_by_favorite){
+            getFavorites();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        Bundle b = new Bundle();
+        b.putInt(SELECTED_FILTER_TAG, SELECTED_FILTER);
+        getIntent().putExtras(b);
+        super.onStop();
     }
 }

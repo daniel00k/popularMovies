@@ -9,4 +9,8 @@
         android:title="@string/menu_search_by_top_rated"
         android:orderInCategory="2"
         android:id="@+id/menu_search_by_top_rated"/>
+    <item
+        android:title="@string/menu_search_by_favorite"
+        android:orderInCategory="3"
+        android:id="@+id/menu_search_by_favorite"/>
 </menu>
