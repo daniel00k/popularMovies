@@ -227,7 +227,6 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
                     null,
                     null);
             if (cursor != null && cursor.getCount()>0){
-                cursor.moveToFirst();
                 if (cursor.moveToFirst()) {
                     do {
                         Movie movie = new Movie(Integer.parseInt(cursor.getString(cursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_MOVIE_REMOTE_ID))),
@@ -251,4 +250,85 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
 
         return movies;
     }
+
+    public static ArrayList<MovieReview> findMovieReviews(SQLiteDatabase db, Movie movie) {
+
+        ArrayList<MovieReview> reviews = new ArrayList<>();
+        try
+        {
+            db.beginTransaction();
+
+            Cursor cursor = db.query(MoviesContract.MovieReviewEntry.TABLE_NAME,
+                    new String[] {  MoviesContract.MovieReviewEntry.COLUMN_MOVIE_ID,
+                            MoviesContract.MovieReviewEntry.COLUMN_REMOTE_ID,
+                            MoviesContract.MovieReviewEntry.COLUMN_CONTENT,
+                            MoviesContract.MovieReviewEntry.COLUMN_AUTHOR},
+                    MoviesContract.MovieReviewEntry.COLUMN_MOVIE_ID + "=?",
+                    new String[] { String.valueOf(movie.getId())},
+                    null,
+                    null,
+                    null,
+                    null);
+            if (cursor != null && cursor.getCount()>0){
+                if (cursor.moveToFirst()) {
+                    do {
+                        MovieReview movieReview = new MovieReview(cursor.getString(cursor.getColumnIndex(MoviesContract.MovieReviewEntry.COLUMN_REMOTE_ID)),
+                                cursor.getString(cursor.getColumnIndex(MoviesContract.MovieReviewEntry.COLUMN_AUTHOR)),
+                                cursor.getString(cursor.getColumnIndex(MoviesContract.MovieReviewEntry.COLUMN_CONTENT)));
+                        reviews.add(movieReview);
+                    } while (cursor.moveToNext());
+                }
+            }
+
+            db.setTransactionSuccessful();
+        }
+        catch (SQLException e) {
+            //too bad :(
+        }finally {
+            db.endTransaction();
+        }
+
+        return reviews;
+    }
+
+    public static ArrayList<MovieTrailer> findMovieTrailers(SQLiteDatabase db, Movie movie) {
+
+        ArrayList<MovieTrailer> trailers = new ArrayList<>();
+        try
+        {
+            db.beginTransaction();
+
+            Cursor cursor = db.query(MoviesContract.MovieTrailerEntry.TABLE_NAME,
+                    new String[] {  MoviesContract.MovieTrailerEntry.COLUMN_MOVIE_ID,
+                            MoviesContract.MovieTrailerEntry.COLUMN_REMOTE_ID,
+                            MoviesContract.MovieTrailerEntry.COLUMN_NAME,
+                            MoviesContract.MovieTrailerEntry.COLUMN_KEY},
+                    MoviesContract.MovieTrailerEntry.COLUMN_MOVIE_ID + "=?",
+                    new String[] { String.valueOf(movie.getId())},
+                    null,
+                    null,
+                    null,
+                    null);
+            if (cursor != null && cursor.getCount()>0){
+                if (cursor.moveToFirst()) {
+                    do {
+                        MovieTrailer movieTrailer = new MovieTrailer(cursor.getString(cursor.getColumnIndex(MoviesContract.MovieTrailerEntry.COLUMN_REMOTE_ID)),
+                                cursor.getString(cursor.getColumnIndex(MoviesContract.MovieTrailerEntry.COLUMN_NAME)),
+                                cursor.getString(cursor.getColumnIndex(MoviesContract.MovieTrailerEntry.COLUMN_KEY)));
+                        trailers.add(movieTrailer);
+                    } while (cursor.moveToNext());
+                }
+            }
+
+            db.setTransactionSuccessful();
+        }
+        catch (SQLException e) {
+            //too bad :(
+        }finally {
+            db.endTransaction();
+        }
+
+        return trailers;
+    }
+
 }

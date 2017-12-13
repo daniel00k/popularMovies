@@ -80,23 +80,30 @@ public class MovieDescriptionActivity extends AppCompatActivity implements ApiCo
     }
 
     private void queryForTrailers(Movie movie){
-
-        if(NetworkUtils.isConnectionAvailable(this)){
-            new ApiConnector(this, MovieDescriptionActivity.class.getName()+GET_TRAILERS_TAG).execute(NetworkUtils.buildUrl(movie.getId()+ Constants.API_GET_VIDEOS));
+        if(isMovieSaved()){
+            trailers =  MoviesDbHelper.findMovieTrailers(mDb, movie);
+            setTrailers();
         }else{
-            Toast.makeText(this, getString(R.string.connection_error), Toast.LENGTH_LONG).show();
+            if(NetworkUtils.isConnectionAvailable(this)){
+                new ApiConnector(this, MovieDescriptionActivity.class.getName()+GET_TRAILERS_TAG).execute(NetworkUtils.buildUrl(movie.getId()+ Constants.API_GET_VIDEOS));
+            }else{
+                Toast.makeText(this, getString(R.string.connection_error), Toast.LENGTH_LONG).show();
+            }
         }
 
     }
 
     private void queryForReviews(Movie movie){
-
-        if(NetworkUtils.isConnectionAvailable(this)){
-            new ApiConnector(this, MovieDescriptionActivity.class.getName()+GET_REVIEWS_TAG).execute(NetworkUtils.buildUrl(movie.getId()+Constants.API_GET_REVIEWS));
-        }else{
-            Toast.makeText(this, getString(R.string.connection_error), Toast.LENGTH_LONG).show();
+        if(isMovieSaved()){
+            reviews =  MoviesDbHelper.findMovieReviews(mDb, movie);
+            setReviews();
+        }else {
+            if (NetworkUtils.isConnectionAvailable(this)) {
+                new ApiConnector(this, MovieDescriptionActivity.class.getName() + GET_REVIEWS_TAG).execute(NetworkUtils.buildUrl(movie.getId() + Constants.API_GET_REVIEWS));
+            } else {
+                Toast.makeText(this, getString(R.string.connection_error), Toast.LENGTH_LONG).show();
+            }
         }
-
     }
 
     private void updateView(Movie movie) {

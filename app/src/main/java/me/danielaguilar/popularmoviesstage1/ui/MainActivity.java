@@ -32,6 +32,7 @@ public class MainActivity extends BaseActivity implements MoviesAdapter.OnMovieC
     private ProgressBar indeterminateBar;
     private static int SELECTED_FILTER              = -1;
     public static final String MOVIE_TAG            = "movie";
+    public static final String MOVIES_TAG           = "movies";
     public static final String SELECTED_FILTER_TAG  = "selectedFiler";
     MoviesAdapter adapter;
     private SQLiteDatabase mDb;
@@ -47,7 +48,11 @@ public class MainActivity extends BaseActivity implements MoviesAdapter.OnMovieC
 
         recyclerView.setHasFixedSize(true);
 
-        queryApi(Constants.API_GET_POPULAR);
+        if (savedInstanceState != null){
+            movies = savedInstanceState.getParcelableArrayList(MOVIES_TAG);
+        }else{
+            queryApi(Constants.API_GET_POPULAR);
+        }
         setMovieGrid();
     }
 
@@ -126,14 +131,17 @@ public class MainActivity extends BaseActivity implements MoviesAdapter.OnMovieC
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt(SELECTED_FILTER_TAG, SELECTED_FILTER);
+        outState.putParcelableArrayList(MOVIES_TAG, movies);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        if(savedInstanceState != null && savedInstanceState.getInt(SELECTED_FILTER_TAG)==R.id.menu_search_by_favorite){
-            getFavorites();
+        if(savedInstanceState != null ){
+            if(savedInstanceState.getInt(SELECTED_FILTER_TAG)==R.id.menu_search_by_favorite){
+                getFavorites();
+            }
         }
     }
 
