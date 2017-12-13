@@ -66,18 +66,19 @@
 
             <TextView
                 android:id="@+id/overview"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/margin_xxs"
-                android:layout_marginStart="@dimen/margin_xl"
+                android:layout_marginEnd="@dimen/margin_xs"
+                android:layout_marginStart="@dimen/margin_m"
                 android:layout_marginTop="@dimen/margin_xs"
                 android:gravity="left"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/movie_poster"
-                tools:text="texto de ejemplo"
-                android:layout_marginRight="@dimen/margin_xxs"
-                android:layout_marginLeft="@dimen/margin_xl" />
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/release_date"
+                app:layout_constraintTop_toBottomOf="@+id/movie_title"
+                tools:text="texto de ejemplo en modo horizontal lkasjdlkasjdlkasjlkdjalksjdklas jdajkl djlas j dalks kas alsj dasd akls"
+                android:layout_marginRight="@dimen/margin_xs"
+                android:layout_marginLeft="@dimen/margin_m" />
 
             <me.danielaguilar.popularmoviesstage1.components.IconTextView
                 android:id="@+id/make_favorite_movie"
@@ -92,20 +93,6 @@
                 android:textSize="25sp"
                 android:layout_marginLeft="@dimen/margin_xxxl"/>
 
-            <View
-                android:id="@+id/separator"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginEnd="@dimen/margin_xxs"
-                android:layout_marginStart="@dimen/margin_xl"
-                android:layout_marginTop="@dimen/margin_xs"
-                android:background="@color/dark_grey"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/overview"
-                android:layout_marginRight="@dimen/margin_xxs"
-                android:layout_marginLeft="@dimen/margin_xl" />
-
             <LinearLayout
                 android:id="@+id/trailers_container"
                 android:layout_width="match_parent"
@@ -113,7 +100,7 @@
                 android:layout_marginStart="@dimen/margin_xl"
                 android:orientation="vertical"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/separator"
+                app:layout_constraintTop_toBottomOf="@+id/movie_poster"
                 android:layout_marginLeft="@dimen/margin_xl">
 
                 <ProgressBar
@@ -129,12 +116,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_xl"
+                android:layout_marginTop="8dp"
+                android:text="@string/reviews"
                 android:textSize="24sp"
                 android:visibility="gone"
-                android:text="@string/reviews"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/trailers_container"
-                tools:layout_editor_absoluteY="347dp"
                 android:layout_marginLeft="@dimen/margin_xl" />
 
             <android.support.v7.widget.RecyclerView
@@ -142,7 +129,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_xl"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/margin_xs"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/reviews"
                 android:layout_marginLeft="@dimen/margin_xl" />

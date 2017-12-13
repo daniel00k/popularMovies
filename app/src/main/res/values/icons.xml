@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="star_full">&#xf005;</string>
+    <string name="star_empty">&#xf006;</string>
+    <string name="play">&#xf04b;</string>
+    <string name="youtube_play">&#xf16a;</string>
+</resources>

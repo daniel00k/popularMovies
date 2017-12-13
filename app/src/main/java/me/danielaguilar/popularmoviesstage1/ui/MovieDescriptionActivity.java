@@ -1,6 +1,8 @@
 package me.danielaguilar.popularmoviesstage1.ui;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Typeface;
+import android.os.Build;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -37,9 +39,9 @@ import static me.danielaguilar.popularmoviesstage1.ui.MainActivity.MOVIE_TAG;
 
 public class MovieDescriptionActivity extends AppCompatActivity implements ApiConnector.OnTaskCompleted<String>, View.OnClickListener {
 
-    private TextView title, releaseDate, voteAverage, overview;
+    private TextView title, releaseDate, voteAverage, overview, reviewsTxt;
     private ImageView poster;
-    private Button favorite;
+    private TextView favorite;
     private Movie movie;
     private LinearLayout trailersContainer;
     private ProgressBar indeterminateBar;
@@ -107,7 +109,7 @@ public class MovieDescriptionActivity extends AppCompatActivity implements ApiCo
     }
 
     private void setFavoriteText(){
-        final String text = isMovieSaved() ? "Favorite" : "No Favorite";
+        final String text = isMovieSaved() ? getString(R.string.star_full) : getString(R.string.star_empty);
         favorite.setText(text);
     }
 
@@ -120,6 +122,7 @@ public class MovieDescriptionActivity extends AppCompatActivity implements ApiCo
         trailersContainer   = findViewById(R.id.trailers_container);
         reviewsContainer    = findViewById(R.id.reviews_container);
         indeterminateBar    = findViewById(R.id.indeterminateBar);
+        reviewsTxt          = findViewById(R.id.reviews);
         favorite            = findViewById(R.id.make_favorite_movie);
         favorite.setOnClickListener(this);
     }
@@ -134,6 +137,9 @@ public class MovieDescriptionActivity extends AppCompatActivity implements ApiCo
     }
 
     private void setReviews() {
+        if(reviews.size()>0){
+            reviewsTxt.setVisibility(View.VISIBLE);
+        }
         ReviewsAdapter adapter = new ReviewsAdapter(reviews);
         reviewsContainer.setAdapter(adapter);
         reviewsContainer.setLayoutManager(new LinearLayoutManager(this));

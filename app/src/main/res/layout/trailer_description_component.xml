@@ -5,35 +5,46 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <Button
+    <me.danielaguilar.popularmoviesstage1.components.IconTextView
         android:id="@+id/watch_trailer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_xs"
-        android:layout_marginTop="@dimen/margin_xs"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="@dimen/margin_s"
+        android:text="@string/youtube_play"
+        android:textSize="25sp"
+        android:textColor="@color/red"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginLeft="@dimen/margin_xs" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/trailer_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_xs"
         android:layout_marginStart="@dimen/margin_xs"
         android:layout_marginTop="@dimen/margin_mm"
-        tools:text="akjshdkajshdkjas"
+        app:layout_constraintEnd_toStartOf="@+id/share_trailer"
         app:layout_constraintStart_toEndOf="@+id/watch_trailer"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginLeft="@dimen/margin_xs" />
+        tools:text="asdasdasdas" />
+
+    <ImageView
+        android:id="@+id/share_trailer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_xs"
+        android:layout_marginTop="@dimen/margin_mm"
+        android:src="@android:drawable/ic_menu_share"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginRight="@dimen/margin_xs" />
 
     <View
         android:id="@+id/separator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginStart="@dimen/margin_xs"
         android:layout_marginTop="@dimen/margin_mm"
         android:background="@color/dark_grey"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/watch_trailer"
-        android:layout_marginLeft="@dimen/margin_xs" />
+        app:layout_constraintTop_toBottomOf="@+id/watch_trailer" />
 </android.support.constraint.ConstraintLayout>
