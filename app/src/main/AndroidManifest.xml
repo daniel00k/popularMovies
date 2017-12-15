@@ -26,6 +26,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.MainActivity" />
         </activity>
+        <provider
+            android:name=".data.MoviesContentProvider"
+            android:authorities="me.danielaguilar.popularmoviesstage1"
+            android:exported="false"/>
     </application>
 
 </manifest>

@@ -83,7 +83,7 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_TRAILERS_TABLE);
     }
-
+/*
     public static long insertMovie(SQLiteDatabase db,
                                   final Movie movie,
                                   final ArrayList<MovieTrailer> trailers,
@@ -329,6 +329,6 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
         }
 
         return trailers;
-    }
+    }*/
 
 }
