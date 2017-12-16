@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,8 +60,11 @@ public class MovieDescriptionActivity extends AppCompatActivity implements ApiCo
     public static final String REVIEWS_TAG          = "reviews";
     public static final String GET_REVIEWS_TAG      = "getReviews";
     public static final String GET_TRAILERS_TAG     = "getTrailers";
+    public static final String POSITION_TAG         = "position";
+
     private Uri reviewsUri;
     private Uri trailersUri;
+    private ScrollView scrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,6 +160,7 @@ public class MovieDescriptionActivity extends AppCompatActivity implements ApiCo
         trailersContainer   = findViewById(R.id.trailers_container);
         reviewsContainer    = findViewById(R.id.reviews_container);
         indeterminateBar    = findViewById(R.id.indeterminateBar);
+        scrollView          = findViewById(R.id.descriptionScrollView);
         reviewsTxt          = findViewById(R.id.reviews);
         favorite            = findViewById(R.id.make_favorite_movie);
         favorite.setOnClickListener(this);
@@ -206,6 +211,8 @@ public class MovieDescriptionActivity extends AppCompatActivity implements ApiCo
         outState.putParcelableArrayList(TRAILERS_TAG, trailers);
         outState.putParcelableArrayList(REVIEWS_TAG, reviews);
         outState.putParcelable(CURRENT_MOVIE_TAG, movie);
+        outState.putIntArray(POSITION_TAG, new int[]{scrollView.getScrollX(),scrollView.getScrollY()});
+
         super.onSaveInstanceState(outState);
     }
 
@@ -215,6 +222,13 @@ public class MovieDescriptionActivity extends AppCompatActivity implements ApiCo
         trailers    = savedInstanceState.getParcelableArrayList(TRAILERS_TAG);
         reviews     = savedInstanceState.getParcelableArrayList(REVIEWS_TAG);
         super.onRestoreInstanceState(savedInstanceState);
+        final int[] position = savedInstanceState.getIntArray(POSITION_TAG);
+        if(position != null)
+            scrollView.post(new Runnable() {
+                public void run() {
+                    scrollView.scrollTo(position[0], position[1]);
+                }
+            });
     }
 
     @Override

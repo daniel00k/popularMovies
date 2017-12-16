@@ -62,7 +62,7 @@ public class MainActivity extends BaseActivity implements MoviesAdapter.OnMovieC
         indeterminateBar.setVisibility(View.GONE);
         adapter = new MoviesAdapter(movies, this, this);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
     }
 
     @Override
